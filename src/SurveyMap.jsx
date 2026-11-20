@@ -172,7 +172,9 @@ const terrainFrag = /* glsl */ `
 
 function Terrain({ density, timeline, intro, scroll }) {
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(W, D, 280, 180)
+    // lighter mesh on phones: same terrain, about a third of the vertices
+    const fine = window.innerWidth > 760
+    const geo = new THREE.PlaneGeometry(W, D, fine ? 280 : 168, fine ? 180 : 108)
     geo.rotateX(-Math.PI / 2)
     const pos = geo.attributes.position
     for (let i = 0; i < pos.count; i++) {

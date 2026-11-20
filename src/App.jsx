@@ -51,6 +51,26 @@ function Hero({ heroRef, visible }) {
   const compact = useMedia('(max-width: 760px)')
   const [runId, setRunId] = useState(0)
 
+  // Start the 3D only after the page has loaded and painted, so the name and
+  // text appear immediately and the heavy WebGL setup doesn't block them.
+  const [mapReady, setMapReady] = useState(false)
+  useEffect(() => {
+    let idle = 0
+    let timer = 0
+    const go = () => {
+      const ric = window.requestIdleCallback
+      if (ric) idle = ric(() => setMapReady(true), { timeout: 900 })
+      else timer = setTimeout(() => setMapReady(true), 200)
+    }
+    if (document.readyState === 'complete') go()
+    else window.addEventListener('load', go, { once: true })
+    return () => {
+      window.removeEventListener('load', go)
+      if (idle) window.cancelIdleCallback(idle)
+      clearTimeout(timer)
+    }
+  }, [])
+
   // scroll progress out of the hero, 0-1, for the CSS that parts the title and legend
   useScrollFrame(
     heroRef,
@@ -63,9 +83,11 @@ function Hero({ heroRef, visible }) {
 
   return (
     <header className="hero" id="top" ref={heroRef}>
-      <Suspense fallback={null}>
-        <SurveyMap runId={runId} still={still} calm={CALM} compact={compact} active={visible} />
-      </Suspense>
+      {mapReady && (
+        <Suspense fallback={null}>
+          <SurveyMap runId={runId} still={still} calm={CALM} compact={compact} active={visible} />
+        </Suspense>
+      )}
 
       <nav className="topbar" aria-label="Primary">
         <p className="coords">New Delhi, 28.61° N 77.21° E</p>
