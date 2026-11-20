@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { PipelineFigure, LatencyFigure } from './figures.jsx'
-import { MOTION, Plot, clamp01, useRevealAll, useScrollFrame } from './motion.jsx'
+import { MOTION, CALM, Plot, clamp01, useRevealAll, useScrollFrame } from './motion.jsx'
 import {
   EMAIL, PHONE, PHONE_HREF, LINKEDIN, GITHUB, RESUME, HOSTEL,
   SKILLS, COURSEWORK, CERTIFICATIONS,
@@ -52,15 +52,19 @@ function Hero({ heroRef, visible }) {
   const [runId, setRunId] = useState(0)
 
   // scroll progress out of the hero, 0-1, for the CSS that parts the title and legend
-  useScrollFrame(heroRef, (el) => {
-    const r = el.getBoundingClientRect()
-    el.style.setProperty('--hp', clamp01(-r.top / (r.height * 0.85)).toFixed(4))
-  })
+  useScrollFrame(
+    heroRef,
+    (el) => {
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--hp', clamp01(-r.top / (r.height * 0.85)).toFixed(4))
+    },
+    MOTION && !CALM,
+  )
 
   return (
     <header className="hero" id="top" ref={heroRef}>
       <Suspense fallback={null}>
-        <SurveyMap runId={runId} still={still} compact={compact} active={visible} />
+        <SurveyMap runId={runId} still={still} calm={CALM} compact={compact} active={visible} />
       </Suspense>
 
       <nav className="topbar" aria-label="Primary">

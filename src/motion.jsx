@@ -1,16 +1,22 @@
 import { useEffect, useRef } from 'react'
 
 /*
-  One switch for all motion. Off when the reader asks for reduced motion;
-  `?motion` forces it on for development.
-  main.jsx mirrors it as the `motion` class on <html>, and every hidden
-  "before" state in the CSS is scoped to html.motion, so with motion off
-  (or before JS runs) everything is simply drawn in its final state.
+  Two switches.
+  MOTION: the drawing animations (map replay, plotted headings, figures).
+    Always on; `?still` turns it off for testing. main.jsx mirrors it as the
+    `motion` class on <html>, and every hidden "before" state in the CSS is
+    scoped to html.motion, so before JS runs everything is drawn final.
+  CALM: drops the moves that shift the whole view (pointer parallax, the
+    camera pulling back on scroll, the title and legend parting). Off by
+    default: the owner wants the full experience for every visitor, including
+    those whose OS reports reduced motion (Windows "Animation effects" off is
+    common on laptops). `?calm` turns it on. Mirrored as html.calm.
 */
-export const MOTION =
-  typeof window !== 'undefined' &&
-  (!window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-    new URLSearchParams(window.location.search).has('motion'))
+const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+
+export const MOTION = typeof window !== 'undefined' && !params.has('still')
+
+export const CALM = typeof window !== 'undefined' && params.has('calm')
 
 export const clamp01 = (x) => Math.min(Math.max(x, 0), 1)
 

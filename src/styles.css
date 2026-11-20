@@ -193,12 +193,12 @@ html.motion .survey-map {
 }
 
 @media (min-width: 761px) {
-  html.motion .title-block {
+  html.motion:not(.calm) .title-block {
     transform: translate3d(calc(var(--hp) * -9vw), calc(var(--hp) * -3vh), 0);
     opacity: calc(1 - var(--hp) * 0.9);
   }
 
-  html.motion .legend {
+  html.motion:not(.calm) .legend {
     transform: translate3d(calc(var(--hp) * 9vw), calc(var(--hp) * -3vh), 0);
     opacity: calc(1 - var(--hp) * 0.9);
   }
@@ -331,11 +331,9 @@ html.motion .survey-map {
   border-color: var(--magenta);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .minibar,
-  .minibar[data-show] {
-    transition: none;
-  }
+html.calm .minibar,
+html.calm .minibar[data-show] {
+  transition: none;
 }
 
 /* Title block: the one loud thing besides the map */

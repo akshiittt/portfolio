@@ -360,6 +360,7 @@ function Marker({ x, z, order, timeline, scroll, scale }) {
 /* ---------- Camera: framing per aspect, pointer parallax, scroll pull-back ---------- */
 
 function Rig({ still, scroll }) {
+  // `still` here means "camera stays put": no motion at all, or a calm reader
   const { camera, size, gl, invalidate } = useThree()
   const narrow = isNarrow(size)
   const { pos, target } = useMemo(() => framing(narrow), [narrow])
@@ -447,7 +448,7 @@ function Clock({ timeline, intro, runId, still, active }) {
   return null
 }
 
-export default function SurveyMap({ runId, still, compact, active = true }) {
+export default function SurveyMap({ runId, still, calm = false, compact, active = true }) {
   const timeline = useRef(still ? 1 : 0)
   const intro = useRef(still ? 1 : 0)
   const scroll = useRef(0)
@@ -468,7 +469,7 @@ export default function SurveyMap({ runId, still, compact, active = true }) {
       aria-hidden="true"
     >
       <Clock timeline={timeline} intro={intro} runId={runId} still={still} active={active} />
-      <Rig still={still} scroll={scroll} />
+      <Rig still={still || calm} scroll={scroll} />
       <Terrain density={survey.density} timeline={timeline} intro={intro} scroll={scroll} />
       <Pings geometry={survey.geometry} timeline={timeline} compact={compact} />
       {STORES.map(([x, z], i) => (
