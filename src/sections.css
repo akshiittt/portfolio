@@ -1,0 +1,667 @@
+/* =========================================================
+   Sections below the map
+   Each entry reads like a map sheet: a narrow margin column
+   with when/where, and the body beside it.
+   ========================================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+main {
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+}
+
+.section {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding-block: clamp(4rem, 9vw, 8rem) 0;
+}
+
+.section-title {
+  margin: 0 0 clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(10rem, 15rem) minmax(0, 46rem);
+  gap: 1rem clamp(1.5rem, 4vw, 4rem);
+  padding-block: 2rem 2.5rem;
+}
+
+/* the sheet rule above each entry; with motion on it is drawn across once */
+.entry::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1.5px;
+  background: var(--ink);
+  transform-origin: left;
+}
+
+html.motion .entry[data-reveal]:not([data-in])::before {
+  transform: scaleX(0);
+}
+
+html.motion .entry[data-in]::before {
+  animation: rule-draw 1.1s var(--ease-plot) both;
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* when/where stays beside long entries like a margin note */
+@media (min-width: 761px) {
+  .entry-meta {
+    position: sticky;
+    top: 4.5rem;
+    align-self: start;
+  }
+}
+
+.entry + .entry {
+  margin-top: 1rem;
+}
+
+.entry-meta {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--slate);
+}
+
+.entry-meta p {
+  margin: 0 0 0.25rem;
+}
+
+.entry-meta .when {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.entry-meta .links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+}
+
+.entry-meta .links a {
+  color: var(--ink);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.entry-body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.entry-body h3 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  font-stretch: 110%;
+  font-variation-settings: 'wdth' 110;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.entry-body h4 {
+  margin: 2.25rem 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.entry-body p {
+  margin: 0 0 1rem;
+  max-width: 38em;
+}
+
+.entry-lede {
+  font-size: 1.1875rem;
+}
+
+.facts {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.facts li {
+  position: relative;
+  padding-left: 1.25rem;
+  max-width: 38em;
+}
+
+.facts li::before {
+  content: '';
+  position: absolute;
+  left: 0.15rem;
+  top: 0.62em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--magenta);
+}
+
+.facts strong {
+  font-weight: 700;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0 2.5rem;
+}
+
+.note {
+  font-size: 0.875rem;
+  color: var(--slate);
+}
+
+/* ---------- Pipeline small multiples ---------- */
+
+.pipeline-figure {
+  margin: 1.75rem 0 0.5rem;
+}
+
+.fig-panels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fig-panel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--paper);
+}
+
+.fig-frame {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.fig-contour ellipse {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.22;
+  stroke-width: 0.8;
+}
+
+.fig-grid line {
+  stroke: var(--blue);
+  stroke-opacity: 0.35;
+  stroke-width: 0.6;
+}
+
+.fig-ping,
+.fig-cell {
+  fill: var(--magenta);
+}
+
+.fig-cell {
+  opacity: var(--o);
+}
+
+.fig-ping-faint {
+  fill: var(--magenta);
+  opacity: 0.3;
+}
+
+.fig-pull {
+  stroke: var(--magenta);
+  stroke-opacity: 0.4;
+  stroke-width: 0.7;
+}
+
+/* Scroll-scrubbed steps. --k1..--k4 come from figures.jsx and default to 1,
+   so without motion every panel is simply drawn complete. */
+.pipeline-figure {
+  --k1: 1;
+  --k2: 1;
+  --k3: 1;
+  --k4: 1;
+}
+
+html.motion .fig-ping {
+  --k: clamp(0, calc((var(--k1) - var(--d) * 0.6) / 0.4), 1);
+  opacity: var(--k);
+  transform: translateY(calc((1 - var(--k)) * -12px)) scale(calc(0.6 + var(--k) * 0.4));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+html.motion .fig-cell {
+  --k: clamp(0, calc((var(--k2) - var(--d) * 0.55) / 0.45), 1);
+  opacity: calc(var(--o) * var(--k));
+}
+
+html.motion .fig-pull {
+  --k: clamp(0, calc((var(--k3) - var(--d) * 0.35) / 0.45), 1);
+  stroke-dasharray: var(--len) var(--len);
+  stroke-dashoffset: calc(var(--len) * (1 - var(--k)));
+}
+
+html.motion .fig-ping-faint {
+  opacity: calc(0.3 * min(1, var(--k3) * 4));
+}
+
+/* the centroid locks on like the markers on the map: closes in from wide */
+html.motion .fig-lock {
+  --k: clamp(0, calc((var(--k3) - 0.65) / 0.35), 1);
+  opacity: var(--k);
+  transform: scale(calc(1.9 - 0.9 * var(--k)));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+html.motion .fig-verify {
+  opacity: clamp(0, calc(var(--k4) * 5), 1);
+}
+
+html.motion .fig-leader {
+  --k: clamp(0, calc(var(--k4) / 0.5), 1);
+  stroke-dasharray: 37px 37px;
+  stroke-dashoffset: calc(37px * (1 - var(--k)));
+}
+
+html.motion .fig-tag-group {
+  --k: clamp(0, calc((var(--k4) - 0.45) / 0.45), 1);
+  opacity: var(--k);
+  transform: translateY(calc((1 - var(--k)) * -8px));
+}
+
+.fig-store {
+  fill: var(--paper);
+  stroke: var(--magenta);
+  stroke-width: 3;
+}
+
+.fig-leader {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.fig-tag {
+  fill: var(--ink);
+}
+
+.fig-tag-text {
+  fill: var(--paper);
+  font: 600 10px var(--font);
+}
+
+.entry-body .fig-title {
+  margin: 0.6rem 0 0.15rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.fig-step {
+  display: inline-grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-0.05rem);
+}
+
+.entry-body .fig-caption {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--slate);
+}
+
+/* ---------- Latency: two map scale bars ---------- */
+
+.latency-figure {
+  margin: 1.5rem 0 0.5rem;
+  max-width: 38rem;
+}
+
+.scale-row + .scale-row {
+  margin-top: 1rem;
+}
+
+.entry-body .scale-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.9375rem;
+}
+
+.scale-track {
+  position: relative;
+  height: 0.9rem;
+  margin-right: 3.5rem;
+}
+
+.scale-fill {
+  --f: 1;
+  position: relative;
+  height: 100%;
+}
+
+/* one segment per 0.1 s, so the bars can be read like a map scale */
+.scale-bar {
+  --c: var(--ink);
+  height: 100%;
+  box-shadow: inset 0 0 0 1.5px var(--c);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--c) 0,
+    var(--c) var(--seg),
+    var(--paper) var(--seg),
+    var(--paper) calc(var(--seg) * 2)
+  );
+  clip-path: inset(0 calc((1 - var(--f)) * 100%) 0 0);
+}
+
+.scale-bar.is-accent {
+  --c: var(--magenta);
+}
+
+/* the readout rides on the end of the bar while it fills */
+.scale-head {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc((var(--f) - 1) * 100%));
+  pointer-events: none;
+}
+
+.scale-value {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translate(0.6rem, -50%);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.latency-figure[data-armed] .scale-fill:not([data-started]) .scale-value {
+  opacity: 0;
+}
+
+.scale-fill[data-live] .scale-value {
+  color: var(--slate);
+}
+
+.scale-axis {
+  position: relative;
+  height: 1.5rem;
+  margin: 0.5rem 3.5rem 0 0;
+  border-top: 1px solid var(--slate);
+  font-size: 0.75rem;
+  color: var(--slate);
+  font-variant-numeric: tabular-nums;
+  /* minor ticks every 0.1 s */
+  background: repeating-linear-gradient(
+      90deg,
+      var(--slate) 0 1px,
+      transparent 1px calc(100% / 12)
+    )
+    top left / 100% 4px no-repeat;
+}
+
+.scale-axis span {
+  position: absolute;
+  top: 0.4rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.scale-axis span::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -0.4rem;
+  width: 1px;
+  height: 7px;
+  background: var(--slate);
+}
+
+.scale-axis span:first-child {
+  transform: none;
+}
+
+.scale-axis span:first-child::before {
+  left: 0;
+}
+
+.latency-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--slate);
+}
+
+/* ---------- Lighthouse ---------- */
+
+.lighthouse {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 2.25rem 0 0.5rem;
+  border: 1.5px solid var(--ink);
+}
+
+.lighthouse div {
+  padding: 0.75rem 0.9rem;
+}
+
+.lighthouse div + div {
+  border-left: 1px solid var(--ink);
+}
+
+html.motion .lighthouse[data-reveal]:not([data-in]) > div > * {
+  clip-path: inset(0 100% 0 0);
+}
+
+html.motion .lighthouse[data-in] > div > * {
+  animation: wipe 0.6s var(--ease-plot) both;
+}
+
+html.motion .lighthouse[data-in] > div:nth-child(2) > * { animation-delay: 0.12s; }
+html.motion .lighthouse[data-in] > div:nth-child(3) > * { animation-delay: 0.24s; }
+html.motion .lighthouse[data-in] > div:nth-child(4) > * { animation-delay: 0.36s; }
+html.motion .lighthouse[data-in] > div > dd { animation-duration: 0.75s; }
+
+@keyframes wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.lighthouse dt {
+  font-size: 0.8125rem;
+  color: var(--slate);
+}
+
+.lighthouse dd {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ---------- Skills ---------- */
+
+.skills {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.skills dt {
+  font-weight: 700;
+}
+
+.skills dd {
+  margin: 0.15rem 0 0;
+  max-width: 38em;
+}
+
+/* ---------- Contact ---------- */
+
+.contact {
+  margin-top: clamp(5rem, 10vw, 9rem);
+  padding: clamp(3rem, 7vw, 6rem) clamp(1rem, 3vw, 2.5rem) 2rem;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.contact > * {
+  max-width: 76rem;
+  margin-inline: auto;
+}
+
+.contact .section-title {
+  margin-bottom: 1.25rem;
+}
+
+.contact-lede {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  margin-top: 0;
+}
+
+.contact-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-block: 2rem;
+}
+
+.contact-email a {
+  font-size: clamp(1.5rem, 4.4vw, 3.25rem);
+  font-weight: 700;
+  font-stretch: 110%;
+  font-variation-settings: 'wdth' 110;
+  letter-spacing: -0.02em;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+}
+
+.contact-email button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--paper);
+  background: none;
+  border: 1.5px solid var(--paper);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.contact-email button:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  padding: 0;
+  list-style: none;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.contact-links a {
+  text-underline-offset: 0.2em;
+}
+
+.contact :focus-visible {
+  outline-color: var(--paper);
+}
+
+.contact .section-title {
+  --pen-color: var(--paper);
+}
+
+.colophon {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(232 236 231 / 0.25);
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+/* ---------- Narrow screens: sections ---------- */
+
+@media (max-width: 760px) {
+  .entry {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+  }
+
+  .entry-meta .links {
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    width: 100%;
+  }
+
+  .fig-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lighthouse {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lighthouse div:nth-child(3) {
+    border-left: none;
+  }
+
+  .lighthouse div:nth-child(n + 3) {
+    border-top: 1px solid var(--ink);
+  }
+}
