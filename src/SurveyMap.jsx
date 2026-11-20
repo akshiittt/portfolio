@@ -43,12 +43,18 @@ const smooth = (a, b, x) => {
 }
 const cellsAt = (t) => smooth(0.38, 0.48, t) * (1 - smooth(0.66, 0.78, t))
 
+/*
+  Wide screens look across the sheet from the south. Portrait screens look
+  along it from the east instead: the stores spread about 7 units east-west
+  but only about 3.5 north-south, so turning the camera 90 degrees puts the
+  long spread into depth and every store fits a phone's narrow width.
+*/
 function framing(narrow) {
   return narrow
-    ? { pos: new THREE.Vector3(1.0, 11.5, 7.5), target: new THREE.Vector3(1.0, 0, 0.2) }
+    ? { pos: new THREE.Vector3(13.2, 7.4, -0.65), target: new THREE.Vector3(0.7, 0, -0.65) }
     : { pos: new THREE.Vector3(0.6, 5.4, 7.2), target: new THREE.Vector3(0.8, 0, 0.6) }
 }
-const isNarrow = (size) => size.width / size.height < 0.9
+const isNarrow = (size) => size.width / size.height < 1.1
 
 /* ---------- Seeded data shared by the pings and the density cells ---------- */
 
@@ -413,11 +419,12 @@ function Rig({ still, scroll }) {
     par.x += (px - par.x) * k
     par.y += (py - par.y) * k
     const lift = smooth(0, 1, scroll.current)
-    camera.position.set(
-      pos.x + par.x,
-      pos.y + par.y + lift * (narrow ? 2.2 : 2.8),
-      pos.z + lift * (narrow ? 2.0 : 1.6),
-    )
+    if (narrow) {
+      // looking west: sideways parallax is along z, pulling back is along +x
+      camera.position.set(pos.x + lift * 2.0, pos.y + par.y + lift * 2.2, pos.z - par.x)
+    } else {
+      camera.position.set(pos.x + par.x, pos.y + par.y + lift * 2.8, pos.z + lift * 1.6)
+    }
     camera.lookAt(target)
     if (Math.abs(px - par.x) + Math.abs(py - par.y) > 1e-4) invalidate()
   })
